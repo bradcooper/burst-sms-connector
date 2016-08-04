@@ -1,24 +1,15 @@
 # BurstSMS Anypoint Connector
 
-[Connector description including destination service or application with]
+Allows Mule applications to connect with Burst SMS (http://burstsms.com) via their supplied Rest API. 
+
+**Currently under development, not ready for consumption**
 
 # Mule supported versions
-Examples:
-Mule 3.4.x, 3.5.x
-Mule 3.4.1
+Mule 3.8.x
 
-# [Destination service or application name] supported versions
-Example:
-Oracle E-Business Suite 12.1 and above.
+# Burst SMS supported versions
 
-#Service or application supported modules
-Example:
-Oracle CRM
-Oracle Financials
-or 
-Salesforce API v.24
-Salesforce Metadata API
-
+Burst SMS API as implemented 1 August, 2016
 
 # Installation 
 For beta connectors you can download the source code and build it with devkit to find it available on your local repository. Then you can add it to Studio
