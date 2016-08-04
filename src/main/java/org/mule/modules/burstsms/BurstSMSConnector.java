@@ -8,8 +8,8 @@ import org.mule.api.annotations.Connector;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.display.FriendlyName;
 import org.mule.api.annotations.display.Placement;
-import org.mule.api.annotations.display.Summary;
 import org.mule.api.annotations.lifecycle.Start;
+import org.mule.api.annotations.param.Email;
 import org.mule.api.annotations.param.Optional;
 import org.mule.modules.burstsms.config.ConnectorConfig;
 
@@ -42,6 +42,14 @@ public class BurstSMSConnector {
 
 	public enum DeliveryStatus {
 		DELIVERED, FAILED, PENDING
+	}
+	
+	public enum NumberFilter {
+		OWNED, AVAILABLE
+	}
+	
+	public enum MemberSelection {
+		ACTIVE, INACTIVE, ALL, NONE
 	}
 	
 	private BurstSMSClient burstSMSClient;
@@ -113,37 +121,19 @@ public class BurstSMSConnector {
      */
     @Processor(name = "send-sms", friendlyName = "Send SMS")
     public Map<?,?> sendSMS(
-    		@Optional
-    		@Placement(order = 1, group = "Destination")
-    		List<String> to,
-    		@Optional
-    		@Placement(order = 2, group = "Destination")
-    		CountryCode countryCode,
-    		@Optional
-    		@Placement(order = 3, group = "Destination")
-    		Long listId,
     		String message,
-    		@Optional
-    		String from,
-    		@Optional 
-    		String sendAt, // TODO: 
-    		@Optional
-    		@Placement(tab = "Advanced", group = "Callbacks")
-    		@FriendlyName("Delivery Receipt Callback URL")
-    		String dlrCallback,
-    		@Optional
-    		@Placement(tab = "Advanced", group = "Callbacks")
-    		@FriendlyName("Reply Callback URL")
-    		String replyCallback,
-    		@Optional
-    		@Placement(tab = "Advanced", group = "Other")
-    		Long validity,
-    		@Optional
-    		@Placement(tab = "Advanced", group = "Other")
-    		String repliesToEmail,
-    		@Optional
-    		@Placement(tab = "Advanced", group = "Other")
-    		Boolean fromShared) throws BurstSMSException {
+    		@Optional String from,
+    		@Optional String sendAt, // TODO: 
+    		@Optional @Placement(order = 1, group = "Destination") List<String> to,
+    		@Optional @Placement(order = 2, group = "Destination") CountryCode countryCode,
+    		@Optional @Placement(order = 3, group = "Destination") Long listId,
+    		@Optional @Placement(tab = "Advanced", group = "Callbacks")
+    		@FriendlyName("Delivery Receipt Callback URL") String dlrCallback,
+    		@Optional @Placement(tab = "Advanced", group = "Callbacks")
+    		@FriendlyName("Reply Callback URL") String replyCallback,
+    		@Optional @Placement(tab = "Advanced", group = "Other") Long validity,
+    		@Optional @Placement(tab = "Advanced", group = "Other") String repliesToEmail,
+    		@Optional @Placement(tab = "Advanced", group = "Other") Boolean fromShared) throws BurstSMSException {
     	
     	return getBurstSMSClient().sendSMS(message, to, from, sendAt, listId, dlrCallback, replyCallback,
     			validity, repliesToEmail, fromShared, countryCode);
@@ -159,12 +149,8 @@ public class BurstSMSConnector {
      */
     @Processor(name = "format-number", friendlyName = "Format and validate number")
     public Map<?, ?> formatNumber(
-    		@Placement(order = 1)
-    		@Summary("The number to check")
-    		String number, 
-    		@Placement(order = 2)
-    		@Summary("2 Letter countrycode to validate number against")
-    		CountryCode countryCode) throws BurstSMSException {
+    		@Placement(order = 1) String number, 
+    		@Placement(order = 2) CountryCode countryCode) throws BurstSMSException {
     	
     	return getBurstSMSClient().formatNumber(number, countryCode);
     }
@@ -209,22 +195,14 @@ public class BurstSMSConnector {
 	 */
 	@Processor(name = "get-sms-responses", friendlyName = "Get SMS responses")
     public Map<?, ?> getSMSResponses(
-    		@Optional
-    		String messageId,
-    		@Optional
-    		String keywordId,
-    		@Optional
-    		String keyword,
-    		@Optional
-    		String number,
-    		@Optional
-    		String msisdn,
-    		@Optional
-    		Integer page,
-    		@Optional
-    		Integer max,
-    		@Optional
-    		Boolean incluldeOriginal)  throws BurstSMSException{
+    		@Optional String messageId,
+    		@Optional String keywordId,
+    		@Optional String keyword,
+    		@Optional String number,
+    		@Optional String msisdn,
+    		@Optional Integer page,
+    		@Optional Integer max,
+    		@Optional Boolean incluldeOriginal)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
@@ -248,18 +226,12 @@ public class BurstSMSConnector {
 	 */
 	@Processor(name = "get-user-sms-responses", friendlyName = "Get user SMS responses")
     public Map<?, ?> getUserSMSResponses(
-    		@Optional
-    		String start, // TODO:
-    		@Optional
-    		String end, // TODO:
-    		@Optional
-    		Integer page, 
-    		@Optional
-    		Integer max, 
-    		@Optional
-    		OnlyOmitBoth keywords, 
-    		@Optional
-    		Boolean includeOriginal)  throws BurstSMSException{
+    		@Optional String start, // TODO:
+    		@Optional String end, // TODO:
+    		@Optional Integer page, 
+    		@Optional Integer max, 
+    		@Optional OnlyOmitBoth keywords, 
+    		@Optional Boolean includeOriginal)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
@@ -287,14 +259,10 @@ public class BurstSMSConnector {
 	@Processor(name = "get-sms-sent", friendlyName = "Get SMS recipient information")
     public Map<?, ?> getSMSSent(
     		String messageId, 
-    		@Optional
-    		OnlyOmitInclude optouts, 
-    		@Optional
-    		Integer page, 
-    		@Optional
-    		Integer max, 
-    		@Optional
-    		DeliveryStatus delivery)  throws BurstSMSException{
+    		@Optional OnlyOmitInclude optouts, 
+    		@Optional Integer page, 
+    		@Optional Integer max, 
+    		@Optional DeliveryStatus delivery)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
@@ -313,260 +281,469 @@ public class BurstSMSConnector {
     /* *** Number API methods *** */
 	
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get detailed information about a response number you have leased
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064593-get-number">get-number</a>
+	 * @param number The virtual number to retrieve
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-number", friendlyName = "Get leased number information")
-    public Map<?, ?> getNumber()  throws BurstSMSException{
+    public Map<?, ?> getNumber(String number)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get a list of numbers either leased by you or available to be leased
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202108026-get-numbers">get-numbers</a>
+	 * @param filter Possible values are:
+	 *               <ul>
+	 *                 <li>OWNED: retrieve your own response numbers (default)
+	 *                 <li>AVAILABLE: retrieve response numbers available for purchase
+	 *               </ul>
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-numbers", friendlyName = "Get leased and available numbers")
-    public Map<?, ?> getNumbers()  throws BurstSMSException{
+    public Map<?, ?> getNumbers(
+    		@Optional NumberFilter filter, 
+    		@Optional Integer page,
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Lease a dedicated virtual number
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202108016-lease-number">lease-number</a>
+	 * @param number The virtual number to lease. Omit this field to be given a random number. 
+	 *               Use get-numbers to find out which numbers are currently available.
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "lease-number", friendlyName = "Least a virtual number")
-    public Map<?, ?> leaseNumber()  throws BurstSMSException{
+    public Map<?, ?> leaseNumber(@Optional String number)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
-    /* Keyword API methods */
+    /* *** Keyword API methods *** */
+	
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Add a keyword to an existing virtual number.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064643-add-keyword">add-keyword</a>
+	 * @param keyword The first word of a text message
+	 * @param number The dedicated virtual number that the keyword belongs to
+	 * @param reference Your own reference (up to 100 characters)
+	 * @param listId ID of a list to add respondents to, list ID's can be found in the title of a 
+	 *               list or in the list page URL
+	 * @param welcomeMessage SMS message to send to new members
+	 * @param membersMessage SMS message to existing members
+	 * @param activate Whether to make the keyword active immediately.
+	 * @param forwardURL Forward messages to a URL
+	 * @param forwardEmail Forward messages to a set of email addresses
+	 * @param forwardSMS Forward messages to a set of mobile numbers
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "add-keyword", friendlyName = "Add a keyword to a virtual number")
-    public Map<?, ?> addKeyword()  throws BurstSMSException{
+    public Map<?, ?> addKeyword(
+    		String keyword,
+    		String number,
+    		@Optional String reference,
+    		@Optional String listId,
+    		@Optional String welcomeMessage,
+    		@Optional String membersMessage,
+    		@Optional Boolean activate,
+    		@Optional String forwardURL,
+    		@Optional List<String> forwardEmail,
+    		@Optional List<String> forwardSMS)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Edit an existing keyword
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064623-edit-keyword">edit-keyword</a>
+	 * @param keyword The first word of a text message
+	 * @param number The dedicated virtual number that the keyword belongs to
+	 * @param reference Your own reference (up to 100 characters)
+	 * @param listId ID of a list to add respondents to, list ID's can be found in the title of a 
+	 *               list or in the list page URL
+	 * @param welcomeMessage SMS message to send to new members
+	 * @param membersMessage SMS message to existing members
+	 * @param activate Whether to make the keyword active immediately.
+	 * @param forwardURL Forward messages to a URL
+	 * @param forwardEmail Forward messages to a set of email addresses
+	 * @param forwardSMS Forward messages to a set of mobile numbers
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "edit-keyword", friendlyName = "Edit an existing keyword")
-    public Map<?, ?> editKeyword()  throws BurstSMSException{
+    public Map<?, ?> editKeyword(
+    		String keyword,
+    		String number,
+    		@Optional String reference,
+    		@Optional String listId,
+    		@Optional String welcomeMessage,
+    		@Optional String membersMessage,
+    		@Optional Boolean activate,
+    		@Optional String forwardURL,
+    		@Optional List<String> forwardEmail,
+    		@Optional List<String> forwardSMS)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get a list of existing keywords
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202501158-get-keywords">get-keywords</a>
+	 * @param number Filter the list by virtual number
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-keywords", friendlyName = "Get a list of existing keywords")
-    public Map<?, ?> getKeywords()  throws BurstSMSException{
+    public Map<?, ?> getKeywords(
+    		@Optional String number,
+    		@Optional Integer page,
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
-    /* List API methods */
+    /* *** List API methods *** */
+	
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Delete a list and its members.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/205046159-remove-list">remove-list</a>
+	 * @param listId The ID of the list to remove
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "remove-list", friendlyName = "Delete a list and members")
-    public Map<?, ?> removeList()  throws BurstSMSException{
+    public Map<?, ?> removeList(String listId)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get information about a list and its members
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202500838-get-list">get-list</a>
+	 * @param listId The list to retrieve
+	 * @param members Which types of members to return. Possible values:
+	 *                <ul>
+	 *                <li>ACTIVE: only get active members (default)
+	 *                <li>INACTIVE: only get inactive members
+	 *                <li>ALL: get active and inactive members
+	 *                <li>NONE: do not get any members, just metadata
+	 *                </ul>
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page	
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-list", friendlyName = "Get list and member information")
-    public Map<?, ?> getList()  throws BurstSMSException{
+    public Map<?, ?> getList(
+    		String listId,
+    		@Optional MemberSelection members,
+    		@Optional Integer page,
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get the metadata of all your lists.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064413-get-lists">get-lists</a>
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page	
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-lists", friendlyName = "Get metadata of all lists")
-    public Map<?, ?> getLists()  throws BurstSMSException{
+    public Map<?, ?> getLists(
+    		@Optional Integer page,
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Create a new list including the ability to add custom fields.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202102716-add-list">add-list</a>
+	 * @param listName A unique name for the list
+	 * @param fieldNames A list of up to 10 custom field names. 
+	 *                   Once field names have been set they cannot be changed.
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "add-list", friendlyName = "Create a new list")
-    public Map<?, ?> addList()  throws BurstSMSException{
+    public Map<?, ?> addList(
+    		String listName,
+    		@Optional List<String> fieldNames)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Add a member to a list.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/203139007-add-to-list">add-to-list</a>
+	 * @param listId ID of the list to add to
+	 * @param number Mobile number of the member
+	 * @param firstName First name of the member
+	 * @param lastName Last name of the member
+	 * @param fields Custom fields to set. Key is either a number (1 to 10) or of the format 
+	 *               <pre>field.name</pre> to use the names of the custom fields you have 
+	 *               chosen for your list, e.g. field.birthday.
+	 * @param countryCode Formats number for the given country code
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "add-to-list", friendlyName = "Add a member to a list")
-    public Map<?, ?> addToList()  throws BurstSMSException{
+    public Map<?, ?> addToList(
+    		String listId,
+    		String number,
+    		@Optional String firstName,
+    		@Optional String lastName,
+    		@Optional Map<String, String> fields,
+    		@Optional CountryCode countryCode)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Update or add custom fields to a list
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/206272695-add-field-to-list">add-field-to-list</a>
+	 * @param listId ID of the list to add to
+	 * @param fields Custom fields to set. Key is either a number (1 to 10) or of the format 
+	 *               <pre>field.name</pre> to use the names of the custom fields you have 
+	 *               chosen for your list, e.g. field.birthday.
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "add-field-to-list", friendlyName = "Update or add a custom field to a list")
-    public Map<?, ?> addFieldToList()  throws BurstSMSException{
+    public Map<?, ?> addFieldToList(
+    		String listId,
+    		Map<String, String> fields)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Remove a member from one list or all lists
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064463-delete-from-list">delete-from-list</a>
+	 * @param listId ID of the list to remove from. If set to 0 (zero) the member will be removed from all lists.
+	 * @param number Mobile number of the member
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "delete-from-list", friendlyName = "Remove a member from one or all lists")
-    public Map<?, ?> deleteFromList()  throws BurstSMSException{
+    public Map<?, ?> deleteFromList(String listId, String number)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Opt a user out of one list or all lists.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202501008-optout-list-member">optout-list-member</a>
+	 * @param listId ID of the list to remove from. If set to 0 (zero) the member will be removed from all lists.
+	 * @param number Mobile number of the member
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "optout-list-member", friendlyName = "Opt a user out of one or all lists")
-    public Map<?, ?> optOutListMember()  throws BurstSMSException{
+    public Map<?, ?> optOutListMember(String listId, String number)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Edit a member of a list
+	 * @param listId ID of the list the member belongs to
+	 * @param number Mobile number of the member to edit
+	 * @param firstName First name of the member
+	 * @param lastName Last name of the member
+	 * @param fields Custom fields to set. Key is either a number (1 to 10) or of the format 
+	 *               <pre>field.name</pre> to use the names of the custom fields you have 
+	 *               chosen for your list, e.g. field.birthday.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202107886-edit-list-member">edit-list-member</a>
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "edit-list-member", friendlyName = "Edit a list member")
-    public Map<?, ?> editListMember()  throws BurstSMSException{
+    public Map<?, ?> editListMember(
+    		String listId, 
+    		String number,
+    		@Optional String firstName,
+    		@Optional String lastName,
+    		@Optional Map<String, String> fields) throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
 
     /* SMS Email API methods */
+	
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Authorise an email address for sending Email to SMS
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/203139127-add-email">add-email</a>
+	 * @param email Email address to register. You may also register a wild-card email which 
+	 *              allows any user on the same domain to use Email to SMS.
+	 *              <p>Wild-card format: <pre>*@example.com</pre>
+	 * @param maxSMS The maximum number of SMS messages to send from one email message 
+	 *               sent from this email address.
+	 *               Possible values:
+	 *               <ol>
+	 *               <li>up to 160 characters (default)
+	 *               <li>up to 306 characters
+	 *               <li>up to 459 characters
+	 *               <li>up to 612 characters
+	 *               </ol>
+	 * @param number Optional dedicated virtual number
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
-	@Processor(name = "add-email", friendlyName = "Authorise email address for EMail -> SMS")
-    public Map<?, ?> addEmail()  throws BurstSMSException{
+	@Processor(name = "add-email", friendlyName = "Authorise an email address for sending Email to SMS")
+    public Map<?, ?> addEmail(
+    		String email,
+    		@Optional Integer maxSMS,
+    		@Optional String number)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Remove an email address from the Email to SMS authorised list.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202064603-delete-email">delete-email</a>
+	 * @param email Email address to remove. You may also use a wild-card email which 
+	 *              removes all emails on that domain.
+	 *              <p>Wild-card format: <pre>*@example.com</pre>
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
-	@Processor(name = "delete-email", friendlyName = "Remove email address from EMail -> SMS")
-    public Map<?, ?> deleteEmail()  throws BurstSMSException{
+	@Processor(name = "delete-email", friendlyName = "Remove an email address from the Email to SMS authorisation")
+    public Map<?, ?> deleteEmail(String email)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
 
-    /* Reseller API methods */
+    /* *** Reseller API methods *** */
+	
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get detailed information about a client
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202091863-get-client">get-client</a>
+	 * @param clientId The ID of the client
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-client", friendlyName = "Get client information")
-    public Map<?, ?> getClient()  throws BurstSMSException{
+    public Map<?, ?> getClient(String clientId)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get a list of all clients.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/203145737-get-clients">get-clients</a>
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-clients", friendlyName = "Get a list of all clients")
-    public Map<?, ?> getClients()  throws BurstSMSException{
+    public Map<?, ?> getClients(
+    		@Optional Integer page, 
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Add a new client.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202116806-add-client">add-client</a>
+	 * @param listName Client company name
+	 * @param contactName Contact name
+	 * @param email Client email address
+	 * @param password Client password
+	 * @param number Client phone number
+	 * @param timezone A valid timezone, Australia/Sydney. Defaults to your own
+	 * @param clientPays Set to true if the client will pay (the default) or false if you will pay
+	 * @param smsMargin The number of cents to add to the base SMS price. A decimal value.
+	 * @param numberMargin The number of cents to add to the base number price. A decimal value
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "add-client", friendlyName = "Add a new client")
-    public Map<?, ?> addClient()  throws BurstSMSException{
+    public Map<?, ?> addClient(
+    		String listName,
+    		@Optional String contactName,
+    		@Email String email,
+    		String password,
+    		String number,
+    		@Optional String timezone,
+    		@Optional Boolean clientPays,
+    		@Optional Double smsMargin,
+    		@Optional Double numberMargin)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Edit an existing client
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202091853-edit-client">edit-client</a>
+	 * @param clientId The ID of the client
+	 * @param clientName Client company name. Must be unique
+	 * @param contactName Contact name
+	 * @param email Client email address
+	 * @param password Client password
+	 * @param number Client phone number
+	 * @param timezone A valid timezone, Australia/Sydney. Defaults to your own
+	 * @param clientPays Set to true if the client will pay (the default) or false if you will pay
+	 * @param smsMargin The number of cents to add to the base SMS price. A decimal value.
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "edit-client", friendlyName = "Edit an existing client")
-    public Map<?, ?> editClient()  throws BurstSMSException{
+    public Map<?, ?> editClient(
+    		String clientId,
+    		@Optional String clientName,
+    		@Optional String contactName,
+    		@Optional @Email String email,
+    		@Optional String password,
+    		@Optional String number,
+    		@Optional String timezone,
+    		@Optional Boolean clientPays,
+    		@Optional Double smsMargin)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get a list of transactions for a client.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202510058-get-transactions">get-transactions</a>
+	 * @param clientId Only retrieve records for a particular client
+ 	 * @param start A timestamp to start the report from
+	 * @param end A timestamp to end the report at
+	 * @param page Page number, for pagination
+	 * @param max Maximum results returned per page
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-transactions", friendlyName = "Get a transaction list for a client")
-    public Map<?, ?> getTransactions()  throws BurstSMSException{
+    public Map<?, ?> getTransactions(
+    		String clientId,
+    		@Optional String start, // TODO:
+    		@Optional String end, // TODO:
+    		@Optional Integer page, 
+    		@Optional Integer max)  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
     
     /**
-	 * 
-	 * @api.doc <a href=""></a>
+	 * Get information about a transaction
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202108046-get-transaction">get-transaction</a>
+	 * @param transactionId The transaction id
 	 * @return The response, as a map
 	 * @throws BurstSMSException If the API call fails for any reason
 	 */
 	@Processor(name = "get-transaction", friendlyName = "Get a information about a transaction")
-    public Map<?, ?> getTransaction()  throws BurstSMSException{
+    public Map<?, ?> getTransaction(String transactionId)  throws BurstSMSException{
+    	throw new IllegalStateException("Not implemented");
+    }
+	
+	/* *** Account API methods *** */
+	
+    /**
+	 * Get a summary of your account balance.
+	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/200698319-get-balance">get-balance</a>
+	 * @return The response, as a map
+	 * @throws BurstSMSException If the API call fails for any reason
+	 */
+	@Processor(name = "get-balance", friendlyName = "Get a summary of your account balance")
+    public Map<?, ?> getBalance()  throws BurstSMSException{
     	throw new IllegalStateException("Not implemented");
     }
 }
