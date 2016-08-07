@@ -114,124 +114,282 @@ class BurstSMSClient {
 
 	public Map<?, ?> getUserSMSResponses(String start, String end,
 			Integer page, Integer max, OnlyOmitBoth keywords, Boolean includeOriginal) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-user-sms-responses.json")
+				.param("start", start)
+				.param("end", end)
+				.param("page", page)
+				.param("max", max)
+				.param("keywords", keywords)
+				.param("include_original", includeOriginal)
+				.execute();
 	}
 
 	public Map<?, ?> getSMSSent(String messageId, OnlyOmitInclude optouts, Integer page, Integer max,
 			DeliveryStatus delivery) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-sms-sent.json")
+				.param("message_id", messageId)
+				.param("optouts", optouts)
+				.param("page", page)
+				.param("max", max)
+				.param("delivery", delivery)
+				.execute();
 	}
 
 	public Map<?, ?> cancelSMS(String messageId) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("cancel-sms.json")
+				.param("message_id", messageId).execute();
 	}
 
 	public Map<?, ?> getNumber(String number) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-number.json")
+				.param("number", number).execute();
 	}
 
 	public Map<?, ?> getNumbers(NumberFilter filter, Integer page, Integer max) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-numbers.json")
+				.param("filter", filter)
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
 	public Map<?, ?> leaseNumber(String number) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("lease-number.json")
+				.param("number", number).execute();
 	}
 
 	public Map<?, ?> addKeyword(String keyword, String number, String reference, String listId, String welcomeMessage,
 			String membersMessage, Boolean activate, String forwardURL, List<String> forwardEmail,
 			List<String> forwardSMS) throws BurstSMSException {
 
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("add-keyword.json")
+				.param("keyword", keyword)
+				.param("number", number)
+				.param("reference", reference)
+				.param("list_id", listId)
+				.param("welcome_message", welcomeMessage)
+				.param("members_message", membersMessage)
+				.param("activate", activate)
+				.param("forward_url", forwardURL)
+				.param("forward_email", forwardEmail)
+				.param("forward_sms", forwardSMS)
+				.execute();
 	}
 
 	public Map<?, ?> editKeyword(String keyword, String number, String reference, String listId, String welcomeMessage,
 			String membersMessage, Boolean activate, String forwardURL, List<String> forwardEmail,
 			List<String> forwardSMS) throws BurstSMSException {
 
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("edit-keyword.json")
+				.param("keyword", keyword)
+				.param("number", number)
+				.param("reference", reference)
+				.param("list_id", listId)
+				.param("welcome_message", welcomeMessage)
+				.param("members_message", membersMessage)
+				.param("activate", activate)
+				.param("forward_url", forwardURL)
+				.param("forward_email", forwardEmail)
+				.param("forward_sms", forwardSMS)
+				.execute();
 	}
 
 	public Map<?, ?> getKeywords(String number, Integer page, Integer max) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-keywords.json")
+				.param("number", number)
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
 	public Map<?, ?> removeList(String listId) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("remove-list.json")
+				.param("list_id", listId).execute();
 	}
 
 	public Map<?, ?> getList(String listId, MemberSelection members, Integer page, Integer max)
 			throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-list.json")
+				.param("list_id", listId)
+				.param("members", members)
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
 	public Map<?, ?> getLists(Integer page, Integer max) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-lists.json")
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
 	public Map<?, ?> addList(String listName, List<String> fieldNames) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		RequestBuilder builder = new RequestBuilder("add-list.json")
+				.param("name", listName);
+		
+		for (int i = 0; (fieldNames != null) && (i < fieldNames.size()); i++)
+			builder.param("field_" + (i + 1), fieldNames.get(i));
+		
+		return builder.execute();
 	}
 
 	public Map<?, ?> addToList(String listId, String number, String firstName, String lastName,
 			Map<String, String> fields, CountryCode countryCode) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+
+		RequestBuilder builder = new RequestBuilder("add-to-list.json")
+				.param("list_id", listId)
+				.param("msisdn", number)
+				.param("first_name", firstName)
+				.param("last_name", lastName)
+				.param("countrycode", countryCode);
+		
+		if (fields != null) {
+			for (String key: fields.keySet()) {
+				String name;
+				if (key.matches("\\d{1,2}"))
+					name = "field_" + key;
+				else
+					name = "field." + key;
+				builder.param(name, fields.get(key));
+			}
+		}
+		
+		return builder.execute();
 	}
 
 	public Map<?, ?> addFieldToList(String listId, Map<String, String> fields) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		RequestBuilder builder = new RequestBuilder("add-field-to-list.json")
+				.param("list_id", listId);
+		
+		if (fields != null) {
+			for (String key: fields.keySet()) {
+				String name;
+				if (key.matches("\\d{1,2}"))
+					name = "field_" + key;
+				else
+					name = "field." + key;
+				builder.param(name, fields.get(key));
+			}
+		}
+		
+		return builder.execute();
 	}
 
 	public Map<?, ?> deleteFromList(String listId, String number) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("delete-from-list.json")
+				.param("list_id", listId)
+				.param("msisdn", number)
+				.execute();
 	}
 
 	public Map<?, ?> optOutListMember(String listId, String number) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("optout-list-member.json")
+				.param("list_id", listId)
+				.param("msisdn", number)
+				.execute();				
 	}
 
 	public Map<?, ?> editListMember(String listId, String number, String firstName, String lastName,
 			Map<String, String> fields) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+
+		RequestBuilder builder = new RequestBuilder("add-to-list.json")
+				.param("list_id", listId)
+				.param("msisdn", number)
+				.param("first_name", firstName)
+				.param("last_name", lastName);
+		
+		if (fields != null) {
+			for (String key: fields.keySet()) {
+				String name;
+				if (key.matches("\\d{1,2}"))
+					name = "field_" + key;
+				else
+					name = "field." + key;
+				builder.param(name, fields.get(key));
+			}
+		}
+		
+		return builder.execute();
 	}
 
 	public Map<?, ?> addEmail(String email, Integer maxSMS, String number) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("add-email.json")
+				.param("email", email)
+				.param("max-sms", maxSMS)
+				.param("number", number)
+				.execute();
 	}
 
 	public Map<?, ?> deleteEmail(String email) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("delete-email.json")
+				.param("email", email).execute();
 	}
 
 	public Map<?, ?> getClient(String clientId) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-client.json")
+				.param("client_id", clientId).execute();
 	}
 
 	public Map<?, ?> getClients(Integer page, Integer max) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-clients.json")
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
-	public Map<?, ?> addClient(String listName, String contactName, String email, String password, String number,
-			String timezone, Boolean clientPays, Double smsMargin, Double numberMargin) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+	public Map<?, ?> addClient(String clientName, String contactName, String email, 
+			String password, String number, String timezone, Boolean clientPays, 
+			Double smsMargin, Double numberMargin) throws BurstSMSException {
+
+		return new RequestBuilder("add-client.json")
+				.param("name", clientName)
+				.param("contact", contactName)
+				.param("email", email)
+				.param("password", password)
+				.param("msisdn", number)
+				.param("timezone", timezone)
+				.param("client_pays", clientPays)
+				.param("sms_margin", smsMargin)
+				.param("number_margin", numberMargin)
+				.execute();
 	}
 
-	public Map<?, ?> editClient(String clientId, String clientName, String contactName, String email, String password,
-			String number, String timezone, Boolean clientPays, Double smsMargin) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+	public Map<?, ?> editClient(String clientId, String clientName, String contactName, 
+			String email, String password, String number, String timezone, 
+			Boolean clientPays, Double smsMargin) throws BurstSMSException {
+
+		return new RequestBuilder("edit-client.json")
+				.param("name", clientName)
+				.param("contact", contactName)
+				.param("email", email)
+				.param("password", password)
+				.param("msisdn", number)
+				.param("timezone", timezone)
+				.param("client_pays", clientPays)
+				.param("sms_margin", smsMargin)
+				.execute();
 	}
 
 	public Map<?, ?> getTransactions(String clientId, String start, String end, 
 			Integer page, Integer max) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-transactions.json")
+				.param("client_id", clientId)
+				.param("start", start)
+				.param("end", end)
+				.param("page", page)
+				.param("max", max)
+				.execute();
 	}
 
 	public Map<?, ?> getTransaction(String transactionId) throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-transaction.json")
+				.param("transaction_id", transactionId)
+				.execute();
 	}
 
 	public Map<?, ?> getBalance() throws BurstSMSException {
-		throw new IllegalStateException("Not implemented");
+		return new RequestBuilder("get-balance.json").execute();
 	}
 
 	//** helper classes **//

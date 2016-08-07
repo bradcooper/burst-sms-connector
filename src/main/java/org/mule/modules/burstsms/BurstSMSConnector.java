@@ -2,6 +2,7 @@ package org.mule.modules.burstsms;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.mule.api.annotations.Config;
 import org.mule.api.annotations.Connector;
@@ -26,9 +27,13 @@ import org.mule.modules.burstsms.config.ConnectorConfig;
 		name="burst-sms", 
 		friendlyName="BurstSMS", 
 		description = "Access the Burst SMS API to send and manage SMS messages",
+		minMuleVersion = "3.8.0", 
 		keywords="burstsms, burst, sms")
 public class BurstSMSConnector {
 
+	//yyyy-MM-dd HH:mm:ss
+	public static final Pattern SIMPLE_DATETIME_PATTERN = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+	
 	public enum CountryCode {
 		AU, NZ, SG, GB, US
 	}
@@ -106,7 +111,7 @@ public class BurstSMSConnector {
      * @param listId This ID is the numerical reference to one of your recipient lists
      * @param message Message text
      * @param from Set the alphanumeric Caller ID
-     * @param sendAt A time in the future to send the message
+     * @param sendAt A time in the future to send the message. Must match YYYY-MM-DD HH:MM:SS.
      * @param dlrCallback A URL on your system which we can call to notify you of Delivery Receipts. 
      *           If required, this Parameter can be different for each message sent and will take precedence 
      *           over the DLR Callback URL supplied by you in the API Settings.
@@ -124,7 +129,7 @@ public class BurstSMSConnector {
     public Map<?,?> sendSMS(
     		@Text String message,
     		@Optional String from,
-    		@Optional String sendAt, // TODO: 
+    		@Optional String sendAt, 
     		@Optional @Placement(order = 1, group = "Destination") List<String> to,
     		@Optional @Placement(order = 2, group = "Destination") CountryCode countryCode,
     		@Optional @Placement(order = 3, group = "Destination") Long listId,
@@ -134,7 +139,10 @@ public class BurstSMSConnector {
     		@FriendlyName("Reply Callback URL") String replyCallback,
     		@Optional @Placement(tab = "Advanced", group = "Other") Long validity,
     		@Optional @Placement(tab = "Advanced", group = "Other") String repliesToEmail,
-    		@Optional @Placement(tab = "Advanced", group = "Other") Boolean fromShared) throws BurstSMSException {
+    		@Optional @Placement(tab = "Advanced", group = "Other") Boolean fromShared) throws BurstSMSException {    	
+    	
+    	if (sendAt != null && !SIMPLE_DATETIME_PATTERN.matcher(sendAt).matches())
+    		throw new IllegalArgumentException("sendAt is not in correct format");
     	
     	return getBurstSMSClient().sendSMS(message, to, from, sendAt, listId, dlrCallback, replyCallback,
     			validity, repliesToEmail, fromShared, countryCode);
@@ -218,8 +226,8 @@ public class BurstSMSConnector {
 	 * Pick up responses to messages you have sent. 
 	 * Instead of setting message ID, you should provide a time frame.
 	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202494938-get-user-sms-responses">get-user-sms-responses</a>
-	 * @param start A timestamp to start the report from
-	 * @param end A timestamp to end the report at
+	 * @param start A timestamp to start the report from. Must match YYYY-MM-DD HH:MM:SS.
+	 * @param end A timestamp to end the report at. Must match YYYY-MM-DD HH:MM:SS.
 	 * @param page Page number, for pagination
 	 * @param max Maximum results returned per page
 	 * @param keywords Filter if keyword responses should be included. Can be:
@@ -234,13 +242,19 @@ public class BurstSMSConnector {
 	 */
 	@Processor(name = "get-user-sms-responses", friendlyName = "Get user SMS responses")
     public Map<?, ?> getUserSMSResponses(
-    		@Optional @Placement(group = "Reporting Period", order = 1) String start, // TODO:
-    		@Optional @Placement(group = "Reporting Period", order = 2) String end, // TODO:
+    		@Optional @Placement(group = "Reporting Period", order = 1) String start, 
+    		@Optional @Placement(group = "Reporting Period", order = 2) String end,
     		@Optional @Placement(group = "Options", order = 1) OnlyOmitBoth keywords, 
     		@Optional @Placement(group = "Options", order = 2) Boolean includeOriginal, 
     		@Optional @Placement(group = "Pagination", order = 1) Integer page, 
     		@Optional @Placement(group = "Pagination", order = 2) Integer max)  throws BurstSMSException {
-    	return getBurstSMSClient().getUserSMSResponses(start, end, page, max, keywords, includeOriginal);
+
+    	if (start != null && !SIMPLE_DATETIME_PATTERN.matcher(start).matches())
+    		throw new IllegalArgumentException("start is not in correct format");
+    	if (end != null && !SIMPLE_DATETIME_PATTERN.matcher(end).matches())
+    		throw new IllegalArgumentException("end is not in correct format");
+		
+		return getBurstSMSClient().getUserSMSResponses(start, end, page, max, keywords, includeOriginal);
     }
     
     /**
@@ -738,7 +752,7 @@ public class BurstSMSConnector {
 	 * Get a list of transactions for a client.
 	 * @api.doc <a href="http://support.burstsms.com/hc/en-us/articles/202510058-get-transactions">get-transactions</a>
 	 * @param clientId Only retrieve records for a particular client
- 	 * @param start A timestamp to start the report from
+ 	 * @param start A timestamp to start the report from. Must match YYYY-MM-DD HH:MM:SS.
 	 * @param end A timestamp to end the report at
 	 * @param page Page number, for pagination
 	 * @param max Maximum results returned per page
@@ -748,10 +762,16 @@ public class BurstSMSConnector {
 	@Processor(name = "get-transactions", friendlyName = "Get a transaction list for a client")
     public Map<?, ?> getTransactions(
     		String clientId,
-    		@Optional @Placement(group = "Reporting Period", order = 1) String start, // TODO:
-    		@Optional @Placement(group = "Reporting Period", order = 2) String end, // TODO:
+    		@Optional @Placement(group = "Reporting Period", order = 1) String start,
+    		@Optional @Placement(group = "Reporting Period", order = 2) String end,
     		@Optional @Placement(group = "Pagination", order = 1) Integer page, 
     		@Optional @Placement(group = "Pagination", order = 2) Integer max)  throws BurstSMSException {
+
+    	if (start != null && !SIMPLE_DATETIME_PATTERN.matcher(start).matches())
+    		throw new IllegalArgumentException("start is not in correct format");
+    	if (end != null && !SIMPLE_DATETIME_PATTERN.matcher(end).matches())
+    		throw new IllegalArgumentException("end is not in correct format");
+
     	return getBurstSMSClient().getTransactions(clientId, start, end, page, max);
     }
     
