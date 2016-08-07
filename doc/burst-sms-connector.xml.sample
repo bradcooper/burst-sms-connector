@@ -1,124 +1,189 @@
 <!-- BEGIN_INCLUDE(burst-sms:send-sms) -->
-	<burst-sms:send-sms config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:send-sms config-ref="BurstSMS__Config" doc:name="BurstSMS">
+			<burst-sms:message><![CDATA[Hi guys]]></burst-sms:message>
+			<burst-sms:to ref="#[[61491570156,61491570157,61491570158]]" />
+		</burst-sms:send-sms>
 <!-- END_INCLUDE(burst-sms:send-sms) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:format-number) -->
-	<burst-sms:format-number config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:format-number config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" countryCode="AU" number="0455667889"/>
 <!-- END_INCLUDE(burst-sms:format-number) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-sms) -->
-	<burst-sms:get-sms config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-sms config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" messageId="48782"/>
 <!-- END_INCLUDE(burst-sms:get-sms) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-sms-stats) -->
-	<burst-sms:get-sms-stats config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-sms-stats config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" messageId="48782"/>
 <!-- END_INCLUDE(burst-sms:get-sms-stats) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-sms-responses) -->
-	<burst-sms:get-sms-responses config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-sms-responses config-ref="BurstSMS__Config" 
+			doc:name="BurstSMS" keyword="JOIN" mobileNumber="61491570156"/>
 <!-- END_INCLUDE(burst-sms:get-sms-responses) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-user-sms-responses) -->
-	<burst-sms:get-user-sms-responses config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-user-sms-responses config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" end="2013-01-02 00:00:00" start="2013-01-01 00:00:00"/>
 <!-- END_INCLUDE(burst-sms:get-user-sms-responses) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-sms-sent) -->
-	<burst-sms:get-sms-sent config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-sms-sent config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" messageId="48782" optouts="ONLY"/>
 <!-- END_INCLUDE(burst-sms:get-sms-sent) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:cancel-sms) -->
-	<burst-sms:cancel-sms config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:cancel-sms config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" messageId="48782" />
 <!-- END_INCLUDE(burst-sms:cancel-sms) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-number) -->
-	<burst-sms:get-number config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-number config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" number="61414000009"/>
 <!-- END_INCLUDE(burst-sms:get-number) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-numbers) -->
-	<burst-sms:get-numbers config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-numbers config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" filter="AVAILABLE"/>
 <!-- END_INCLUDE(burst-sms:get-numbers) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:lease-number) -->
-	<burst-sms:lease-number config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:lease-number config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" number="61414000013"/>
 <!-- END_INCLUDE(burst-sms:lease-number) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-keyword) -->
-	<burst-sms:add-keyword config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-keyword config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" number="61491570156" forwardURL="http://example.com/gym-promo" 
+			keyword="NEWS" listId="0" reference="Gym news">
+			<burst-sms:welcome-message><![CDATA[Welcome to Mike's gym news]]></burst-sms:welcome-message>
+			<burst-sms:members-message><![CDATA[Thanks for your continued support]]></burst-sms:members-message>
+            <burst-sms:forward-email ref="#[{'news@http://example.com','mike@http://example.com'}]"/>
+            <burst-sms:forward-s-m-s ref="#[{61491570157,61491570158}]"/>
+        </burst-sms:add-keyword>
 <!-- END_INCLUDE(burst-sms:add-keyword) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:edit-keyword) -->
-	<burst-sms:edit-keyword config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:edit-keyword config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" number="61491570156" forwardURL="http://example.com/gym-promo" 
+			keyword="NEWS" listId="0" reference="Gym news">
+			<burst-sms:welcome-message><![CDATA[Welcome to Mike's gym news]]></burst-sms:welcome-message>
+			<burst-sms:members-message><![CDATA[Thanks for your continued support]]></burst-sms:members-message>
+            <burst-sms:forward-email ref="#[{'news@http://example.com','mike@http://example.com'}]"/>
+            <burst-sms:forward-s-m-s ref="#[{61491570157,61491570158}]"/>
+        </burst-sms:edit-keyword>
 <!-- END_INCLUDE(burst-sms:edit-keyword) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-keywords) -->
-	<burst-sms:get-keywords config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-keywords config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" number="61491570157" />
 <!-- END_INCLUDE(burst-sms:get-keywords) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:remove-list) -->
-	<burst-sms:remove-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:remove-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" listId="30"/>
 <!-- END_INCLUDE(burst-sms:remove-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-list) -->
-	<burst-sms:get-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" listId="30" members="INACTIVE"/>
 <!-- END_INCLUDE(burst-sms:get-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-lists) -->
-	<burst-sms:get-lists config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-lists config-ref="BurstSMS__Config" doc:name="BurstSMS" />
 <!-- END_INCLUDE(burst-sms:get-lists) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-list) -->
-	<burst-sms:add-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" listName="Friends">
+            <burst-sms:field-names ref="#[field_1: Birthday, field_2: Town]"/>
+        </burst-sms:add-list>
 <!-- END_INCLUDE(burst-sms:add-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-to-list) -->
-	<burst-sms:add-to-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-to-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" firstName="Ayrton" lastName="Senna" listId="1234567" number="61491570158">
+            <burst-sms:fields>
+                <burst-sms:field key="field_1">1979-05-05</burst-sms:field>
+                <burst-sms:field key="field_2">Sydney</burst-sms:field>
+            </burst-sms:fields>
+        </burst-sms:add-to-list>
 <!-- END_INCLUDE(burst-sms:add-to-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-field-to-list) -->
-	<burst-sms:add-field-to-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-field-to-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS"   listId="1234567" >
+            <burst-sms:fields>
+                <burst-sms:field key="field_1">Sydney</burst-sms:field>
+            </burst-sms:fields>
+        </burst-sms:add-field-to-list>
 <!-- END_INCLUDE(burst-sms:add-field-to-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:delete-from-list) -->
-	<burst-sms:delete-from-list config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:delete-from-list config-ref="BurstSMS__Config"
+			doc:name="BurstSMS"   listId="4117" number="61491570156">
+        </burst-sms:delete-from-list>
 <!-- END_INCLUDE(burst-sms:delete-from-list) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:optout-list-member) -->
-	<burst-sms:optout-list-member config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:optout-list-member config-ref="BurstSMS__Config"
+			doc:name="BurstSMS"   listId="1234567" number="61491570158"  >
+        </burst-sms:optout-list-member>
 <!-- END_INCLUDE(burst-sms:optout-list-member) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:edit-list-member) -->
-	<burst-sms:edit-list-member config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:edit-list-member config-ref="BurstSMS__Config"
+			doc:name="BurstSMS"   listId="1234567" number="61491570158" firstName="Ayrton" lastName="Senna">
+            <burst-sms:fields>
+                <burst-sms:field key="field.top_score">1000001</burst-sms:field>
+            </burst-sms:fields>
+        </burst-sms:edit-list-member>
 <!-- END_INCLUDE(burst-sms:edit-list-member) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-email) -->
-	<burst-sms:add-email config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-email config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" email="email@client.com" maxSMS="2"/>
 <!-- END_INCLUDE(burst-sms:add-email) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:delete-email) -->
-	<burst-sms:delete-email config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:delete-email config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" email="email@client.com"/>
 <!-- END_INCLUDE(burst-sms:delete-email) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-client) -->
-	<burst-sms:get-client config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-client config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" clientId="335553"/>
 <!-- END_INCLUDE(burst-sms:get-client) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-clients) -->
-	<burst-sms:get-clients config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-clients config-ref="BurstSMS__Config" doc:name="BurstSMS" />
 <!-- END_INCLUDE(burst-sms:get-clients) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:add-client) -->
-	<burst-sms:add-client config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:add-client config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" clentNumber="61491570156" clientEmail="joe@example.com" 
+			clientPassword="donttell" companyName="New Client"/>
 <!-- END_INCLUDE(burst-sms:add-client) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:edit-client) -->
-	<burst-sms:edit-client config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:edit-client config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" clentNumber="61491570156"  clientPassword="donttell" 
+			companyName="New Client" clientId="56423" contactEmail="joebrown@example.com"/>
 <!-- END_INCLUDE(burst-sms:edit-client) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-transactions) -->
-	<burst-sms:get-transactions config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-transactions config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" clientId="335553" start="2012-01-01 00:00:00"/>
 <!-- END_INCLUDE(burst-sms:get-transactions) -->
 
 <!-- BEGIN_INCLUDE(burst-sms:get-transaction) -->
-	<burst-sms:get-transaction config-ref="config" request="#[map-payload:request]" />
+		<burst-sms:get-transaction config-ref="BurstSMS__Config"
+			doc:name="BurstSMS" transactionId="356253"/>
 <!-- END_INCLUDE(burst-sms:get-transaction) -->
 
+<!-- BEGIN_INCLUDE(burst-sms:get-balance) -->
+		<burst-sms:get-balance config-ref="BurstSMS__Config" doc:name="BurstSMS" />
+<!-- END_INCLUDE(burst-sms:get-balance) -->
