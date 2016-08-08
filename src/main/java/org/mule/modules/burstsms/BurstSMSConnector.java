@@ -127,7 +127,7 @@ public class BurstSMSConnector {
      */
     @Processor(name = "send-sms", friendlyName = "Send SMS")
     public Map<?,?> sendSMS(
-    		@Text String message,
+    		/* TODO: @Text*/ String message,
     		@Optional String from,
     		@Optional String sendAt, 
     		@Optional @Placement(order = 1, group = "Destination") List<String> to,
@@ -373,8 +373,8 @@ public class BurstSMSConnector {
     		@Placement(order = 2) String number,
     		@Optional @Placement(order = 3) String reference,
     		@Optional @Placement(order = 4) String listId,
-    		@Optional @Text @Placement(order = 5) String welcomeMessage,
-    		@Optional @Text @Placement(order = 6) String membersMessage,
+    		@Optional /* TODO: @Text*/ @Placement(order = 5) String welcomeMessage,
+    		@Optional /* TODO: @Text*/ @Placement(order = 6) String membersMessage,
     		@Optional @Placement(order = 7) Boolean activate,
     		@Optional @Placement(group = "Forwarding", order = 1) String forwardURL,
     		@Optional @Placement(group = "Forwarding", order = 2) List<String> forwardEmail,
@@ -410,8 +410,8 @@ public class BurstSMSConnector {
     		@Placement(order = 2) String number,
     		@Optional @Placement(order = 3) String reference,
     		@Optional @Placement(order = 4) String listId,
-    		@Optional @Text @Placement(order = 5) String welcomeMessage,
-    		@Optional @Text @Placement(order = 6) String membersMessage,
+    		@Optional /* TODO: @Text*/ @Placement(order = 5) String welcomeMessage,
+    		@Optional /* TODO: @Text*/ @Placement(order = 6) String membersMessage,
     		@Optional @Placement(order = 7) Boolean activate,
     		@Optional @Placement(group = "Forwarding", order = 1) String forwardURL,
     		@Optional @Placement(group = "Forwarding", order = 2) List<String> forwardEmail,
