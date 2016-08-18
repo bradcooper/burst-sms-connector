@@ -2,7 +2,7 @@
 
 Allows Mule applications to connect with Burst SMS (http://burstsms.com) via their supplied Rest API. 
 
-**Currently under development, not ready for consumption**
+**This connector should be considered as a BETA version, testing and development is continuing**
 
 # Mule supported versions
 Mule 3.8.x
